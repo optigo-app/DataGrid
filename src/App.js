@@ -36,9 +36,6 @@ function App() {
   let uniqueArray = removeDuplicates(demoFun(), 'Priority');
   console.log('Unique Array:', uniqueArray);
   console.log('Unique colum:', columns);
-  console.log('Unique colum:', columns);
-  console.log('Unique colum:', columns);
-  console.log('Unique colum:', columns);
 
 
   useEffect(() => {
