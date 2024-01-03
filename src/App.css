@@ -46,3 +46,8 @@
   margin: 0;
   background: rgb(160, 173, 179);
 }
+
+.selected-row{
+  color: red;
+  background-color: yellow;
+}
