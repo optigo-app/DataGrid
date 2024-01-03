@@ -1,6 +1,7 @@
+import { Button, Menu } from '@mui/material';
 import './App.css';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useCallback, useEffect, useState } from 'react';
+import React,{ useCallback, useEffect, useState } from 'react';
 import ImageCell from './ImageCell';
 let demoData = require('./WIPReport.json')
 let masterDemoData = require('./mastergridtable.json')
@@ -61,16 +62,32 @@ function App() {
     setCuurentcCal(newColum);
   }
 
+  const CustomButton = () => {
 
+    const handleButtonClick = () => {
+      // Add functionality for the button click here
+      console.log('Button clicked!');
+    };
+
+    return (
+      <div style={{display:'flex'}}>
+        <GridToolbar /> {/* Render the default toolbar */}
+        <Button  onClick={handleButtonClick}>progress filter</Button>
+        <Menu>
+          <div style={{display:'grid',gridTemplatecolumns:'auto auto'}}>
+
+          </div>
+        </Menu>
+        {/* You can add more components here based on your requirements */}
+      </div>
+    );
+  };
+
+
+  console.log('demooo', demoData);
   return (
     <div>
-      {
-        newMaster()?.map((data, index) =>
-          <div key={index}>
-            <p>{data}</p>
-          </div>
-        )
-      }
+
       <div style={{
         height: '100vh'
       }}>
@@ -88,7 +105,8 @@ function App() {
           columns={columns}
           onColumnOrderChange={handleCallOrdr}
           components={{
-            Toolbar: GridToolbar,
+            Toolbar: CustomButton,
+            // Cell: handleCell,
           }}
         />
       </div>
