@@ -1,6 +1,7 @@
+import { Button, Menu } from '@mui/material';
 import './App.css';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 
 let demoData = require('./WIPReport.json')
 function App() {
@@ -29,7 +30,7 @@ function App() {
       }));
       setColumns(updatedColumns)
     }
-  }, [uniqueArray]);
+  }, []);
 
   demoData = demoData.map((item, index) => {
     return {
@@ -73,6 +74,28 @@ function App() {
     return <div>{params.value}</div>
   }
   console.log('demooo', demoData);
+
+  const CustomButton = () => {
+
+    const handleButtonClick = () => {
+      // Add functionality for the button click here
+      console.log('Button clicked!');
+    };
+
+    return (
+      <div style={{display:'flex'}}>
+        <GridToolbar /> {/* Render the default toolbar */}
+        <Button  onClick={handleButtonClick}>progress filter</Button>
+        <Menu>
+          <div style={{display:'grid',gridTemplatecolumns:'auto auto'}}>
+          
+          </div>
+        </Menu>
+        {/* You can add more components here based on your requirements */}
+      </div>
+    );
+  };
+  
   return (
     <div>
 
@@ -93,7 +116,7 @@ function App() {
           columns={columns}
           onColumnOrderChange={handleCallOrdr}
           components={{
-            Toolbar: GridToolbar,
+            Toolbar: CustomButton,
             // Cell: handleCell,
           }}
           // getRowClassName={getRowClassName}
