@@ -18,7 +18,7 @@ function App() {
   // const columns = [
   //   { field: 'col1', headerName: 'Column 1', width: 150 },
   //   { field: 'col2', headerName: 'Column 2', width: 150 },
-  // ];
+  // ];.....
   let demoFun = () => (
     demoData.map(element => {
       return Object.keys(element);
@@ -35,6 +35,9 @@ function App() {
   };
   let uniqueArray = removeDuplicates(demoFun(), 'Priority');
   console.log('Unique Array:', uniqueArray);
+  console.log('Unique colum:', columns);
+  console.log('Unique colum:', columns);
+  console.log('Unique colum:', columns);
   console.log('Unique colum:', columns);
 
 
