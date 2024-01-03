@@ -62,15 +62,28 @@ function App() {
     setCuurentcCal(newColum);
   }
 
+  const CustomButton = () => {
 
-      return (
-        <div className='selected-row'>
-          {params.value}
-        </div>
-      )
-    }
-    return <div>{params.value}</div>
-  }
+    const handleButtonClick = () => {
+      // Add functionality for the button click here
+      console.log('Button clicked!');
+    };
+
+    return (
+      <div style={{display:'flex'}}>
+        <GridToolbar /> {/* Render the default toolbar */}
+        <Button  onClick={handleButtonClick}>progress filter</Button>
+        <Menu>
+          <div style={{display:'grid',gridTemplatecolumns:'auto auto'}}>
+
+          </div>
+        </Menu>
+        {/* You can add more components here based on your requirements */}
+      </div>
+    );
+  };
+
+
   console.log('demooo', demoData);
   return (
     <div>
