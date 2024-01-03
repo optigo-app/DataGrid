@@ -1,29 +1,15 @@
 import './App.css';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { FaUser } from "react-icons/fa";
-import { SiPowerpages } from "react-icons/si";
-import { IoMdHome } from "react-icons/io";
 
 let demoData = require('./WIPReport.json')
-
-
 function App() {
-
-  const [isOpenDetail, setIsOpenDetail] = useState(false);
-  const [isOpenPages, setIsOpenPages] = useState(false);
-  const [isOpenUser, setIsOpenUseer] = useState(false);
   const [columns, setColumns] = useState([]);
 
-  // const columns = [
-  //   { field: 'col1', headerName: 'Column 1', width: 150 },
-  //   { field: 'col2', headerName: 'Column 2', width: 150 },
-  // ];.....
   let demoFun = () => (
     demoData.map(element => {
       return Object.keys(element);
     })
-
   )
 
   const removeDuplicates = (array, key) => {
@@ -34,56 +20,23 @@ function App() {
     });
   };
   let uniqueArray = removeDuplicates(demoFun(), 'Priority');
-  console.log('Unique Array:', uniqueArray[0]);
-  
-  let arr2 = [];
-
   useEffect(() => {
     if (uniqueArray?.length) {
       const updatedColumns = uniqueArray[0].map((field) => ({
         field: field,
         headerName: field,
-        width: 150,
+        width: 150
       }));
       setColumns(updatedColumns)
-      // If you want to use arr2 in your component, you should use state instead
-      // setArr2(updatedColumns);
     }
   }, [uniqueArray]);
-  // const columns = [uniqueArray];
 
-  console.log('Unique colum:', columns);
-
-
-  const rows = [
-    { id: 1, col1: 'Hello', col2: 'World' },
-    { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-    { id: 3, col1: 'MUI', col2: 'is Amazing' },
-
-  ];
-
-
-  // console.log('demoDatademoData',Object.keys(demoData));
-  const toggleDeatilList = () => {
-    setIsOpenDetail(!isOpenDetail);
-    setIsOpenPages(false)
-    setIsOpenUseer(false)
-  };
-
-
-  const togglePagesList = () => {
-    setIsOpenPages(!isOpenPages);
-    setIsOpenDetail(false)
-    setIsOpenUseer(false)
-  };
-
-
-  const toggleUserList = () => {
-    setIsOpenUseer(!isOpenUser);
-    setIsOpenPages(false)
-    setIsOpenDetail(false)
-
-  };
+  demoData = demoData.map((item, index) => {
+    return {
+      id: index + 1,
+      ...item,
+    };
+  });
 
   const [currentCal, setCuurentcCal] = useState(columns);
 
@@ -91,125 +44,61 @@ function App() {
     setCuurentcCal(newColum);
   }
 
+  const getRowClassName = (params) => {
+
+    // console.log('params.PCs',params.row.PCs)
+    // if (params.row.PCs===5) {
+    //   return 'selected-row'; 
+    // }
+    // return ''; 
+
+
+    if (
+      params.row.PCs === 5
+    ) {
+      return 'selected-row'; // CSS class name for the specific selected cell
+    }
+    return '';
+  };
+
+  const handleCell = (params) =>{
+    if(params.row?.PCs === '5'){
+
+      return (
+        <div className='selected-row'>
+          {params.value}
+        </div>
+      )
+    }
+    return <div>{params.value}</div>
+  }
+  console.log('demooo', demoData);
   return (
     <div>
-      <div className='header'>
 
+      <div style={{
+        height: '100vh'
+      }}>
+        <DataGrid
+          checkboxSelection={true}
+          pageSizeOptions={[20, 50, 100]}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 20,
+              },
+            },
+          }}
+          rows={demoData}
+          columns={columns}
+          onColumnOrderChange={handleCallOrdr}
+          components={{
+            Toolbar: GridToolbar,
+            // Cell: handleCell,
+          }}
+          // getRowClassName={getRowClassName}
+        />
       </div>
-      <div style={{ display: 'flex' }}>
-        <div className='siderBar'>
-          <div onClick={toggleUserList} className='menu'>
-            <IoMdHome className='menuIcone' />
-            <p className='menuTitle'>WelCome User</p>
-          </div>
-          <ul className={`my-DetailList ${isOpenUser ? 'open' : ''}`} style={{ border: isOpenUser ? '1px solid lightgray' : ' ' }}>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Clarity</p>
-              </div>
-            </li>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Color</p>
-              </div>
-            </li>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Setting Type	</p>
-              </div>
-            </li>
-          </ul>
-
-          <div onClick={toggleDeatilList} className='menu'>
-            <FaUser className='menuIcone' />
-            <p className='menuTitle'>User</p>
-          </div>
-          <ul className={`my-DetailList ${isOpenDetail ? 'open' : ''}`} style={{ border: isOpenDetail ? '1px solid lightgray' : ' ' }}>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Clarity</p>
-              </div>
-            </li>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Color</p>
-              </div>
-            </li>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Setting Type	</p>
-              </div>
-            </li>
-          </ul>
-
-          <div onClick={togglePagesList} className='menu'>
-            <SiPowerpages className='menuIcone' />
-            <p className='menuTitle'>Pages</p>
-          </div>
-          <ul className={`my-DetailList ${isOpenPages ? 'open' : ''}`} style={{ border: isOpenPages ? '1px solid lightgray' : ' ' }}>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Clarity</p>
-              </div>
-            </li>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Color</p>
-              </div>
-            </li>
-            <li>
-              <div className='dropSize'>
-                <p className='dropDetailTitle'>Setting Type	</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div style={{ width: '100%' }}>
-          <div style={{
-            height: '5vh',
-            backgroundColor: '#cdcec9',
-            borderBottom: '1px solid #888888',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div>
-              <p>ONE</p>
-            </div>
-            <button style={{
-              border: 'none',
-              height: '30px',
-              width: '70px',
-              color: 'white',
-              backgroundColor: '#800000',
-              fontSize: '15px',
-              cursor: 'pointer'
-            }}>Logout</button>
-          </div>
-          <div style={{
-            height: '86vh'
-          }}>
-            <DataGrid
-              checkboxSelection={true}
-              pageSizeOptions={[5, 10, 15]}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
-                  },
-                },
-              }}
-              rows={rows}
-              columns={columns}
-              onColumnOrderChange={handleCallOrdr}
-              components={{
-                Toolbar: GridToolbar
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
     </div>
   );
 }
