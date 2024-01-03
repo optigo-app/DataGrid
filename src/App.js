@@ -34,9 +34,7 @@ function App() {
     });
   };
   let uniqueArray = removeDuplicates(demoFun(), 'Priority');
-  console.log('Unique Array:', uniqueArray[0]);
-  
-  let arr2 = [];
+
 
   useEffect(() => {
     if (uniqueArray?.length) {
@@ -46,13 +44,9 @@ function App() {
         width: 150,
       }));
       setColumns(updatedColumns)
-      // If you want to use arr2 in your component, you should use state instead
-      // setArr2(updatedColumns);
     }
-  }, [uniqueArray]);
-  // const columns = [uniqueArray];
+  }, []);
 
-  console.log('Unique colum:', columns);
 
 
   const rows = [
@@ -62,8 +56,6 @@ function App() {
 
   ];
 
-
-  // console.log('demoDatademoData',Object.keys(demoData));
   const toggleDeatilList = () => {
     setIsOpenDetail(!isOpenDetail);
     setIsOpenPages(false)
