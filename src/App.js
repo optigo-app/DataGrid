@@ -1,30 +1,27 @@
-import { Button, Menu } from '@mui/material';
-import './App.css';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import React,{ useCallback, useEffect, useState } from 'react';
-import ImageCell from './ImageCell';
-let demoData = require('./WIPReport.json')
-let masterDemoData = require('./mastergridtable.json')
+import { Button, Checkbox} from "@mui/material";
+import "./App.css";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React, { useCallback, useEffect, useState } from "react";
+import ImageCell from "./ImageCell";
+let demoData = require("./WIPReport.json");
+let masterDemoData = require("./mastergridtable.json");
 
 function App() {
-
   const [columns, setColumns] = useState([]);
-  const [master, setMaster] = useState([]);
+  const [masterFlag, setMasterFlag] = useState(false);
+  const [checkboxes, setCheckboxes] = useState({})
 
-  let demoFun = () => (
-    demoData.map(element => {
+  let demoFun = () =>
+    demoData.map((element) => {
       return Object.keys(element);
-    })
-  )
+    });
 
   const removeDuplicates = (array, key) => {
     return array.filter((item, index, self) => {
-      return index === self.findIndex(obj => (
-        obj[key] === item[key]
-      ));
+      return index === self.findIndex((obj) => obj[key] === item[key]);
     });
   };
-  let uniqueArray = removeDuplicates(demoFun(), 'Priority');
+  let uniqueArray = removeDuplicates(demoFun(), "Priority");
 
   useEffect(() => {
     if (uniqueArray?.length) {
@@ -32,15 +29,16 @@ function App() {
         field: field,
         headerName: field,
         width: 150,
+        editable: true,
         renderCell: (params) => {
-          if (field === 'Default Image for Job') {
+          if (field === "Default Image for Job") {
             return <ImageCell imageUrl={params.value} />; // Pass image URL to ImageCell component
           } else {
             return params.value; // Render other cell values normally
           }
         },
       }));
-      setColumns(updatedColumns)
+      setColumns(updatedColumns);
     }
   }, []);
 
@@ -52,45 +50,63 @@ function App() {
   });
 
   let newMaster = useCallback(() => {
-    return masterDemoData.map((data) => data.Column3)
-  }, [masterDemoData])
+    return masterDemoData.map((data) => data.Column3);
+  }, [masterDemoData]);
 
-  console.log('newmas', newMaster()?.map((data) => data));
+  console.log(
+    "newmas",
+    newMaster()?.map((data) => data)
+  );
 
   const [currentCal, setCuurentcCal] = useState(columns);
   const handleCallOrdr = (newColum) => {
     setCuurentcCal(newColum);
-  }
+  };
 
   const CustomButton = () => {
 
-    const handleButtonClick = () => {
-      // Add functionality for the button click here
-      console.log('Button clicked!');
+    const handlemenuopen = () => {
+      setMasterFlag((prev)=>!prev);
     };
 
-    return (
-      <div style={{display:'flex'}}>
-        <GridToolbar /> {/* Render the default toolbar */}
-        <Button  onClick={handleButtonClick}>progress filter</Button>
-        <Menu>
-          <div style={{display:'grid',gridTemplatecolumns:'auto auto'}}>
+    const handleMouseLeave = () => {
+        setMasterFlag(false);
+    };
 
-          </div>
-        </Menu>
-        {/* You can add more components here based on your requirements */}
+    const handleCheckboxChange = (event) => {
+      const { name, checked } = event.target;
+      setCheckboxes({
+        ...checkboxes,
+        [name]: checked,
+      });
+    };
+
+
+    return (
+      <div style={{ display: "flex" }}>
+        <GridToolbar /> {/* Render the default toolbar */}
+        <div>
+        <Button  onClick={handlemenuopen}>progress filter</Button>
+        <div onMouseLeave={handleMouseLeave}  style={{display: masterFlag?'block':'none',position:'absolute',zIndex:1,height:'60%',overflowY:'scroll',backgroundColor:'#f1f1f1'}}>
+          {newMaster()?.map((data,i) => (
+              <div key={i}>
+                <Checkbox disableRipple checked={checkboxes[`checkbox${i+1}` || {}]} onClick={(e)=>handleCheckboxChange(e)} name={`checkbox${i+1}`}/>{data}
+              </div>
+            ))}
+        </div>
+        </div>
       </div>
     );
   };
 
-
-  console.log('demooo', demoData);
+  console.log("demooo", demoData);
   return (
     <div>
-
-      <div style={{
-        height: '100vh'
-      }}>
+      <div
+        style={{
+          height: "100vh",
+        }}
+      >
         <DataGrid
           checkboxSelection={true}
           pageSizeOptions={[20, 50, 100]}
@@ -115,8 +131,6 @@ function App() {
 }
 
 export default App;
-
-
 
 //  {
 //   "Category_3\/1\/2024_14:34:27": "srno",
