@@ -1,15 +1,25 @@
-import { Button, Checkbox} from "@mui/material";
+import { Button, Checkbox, Menu,MenuItem, Typography} from "@mui/material";
 import "./App.css";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ImageCell from "./ImageCell";
+
 let demoData = require("./WIPReport.json");
 let masterDemoData = require("./mastergridtable.json");
 
 function App() {
   const [columns, setColumns] = useState([]);
-  const [masterFlag, setMasterFlag] = useState(false);
+  const [rows, setRows] = useState(demoData);
+  const [masterFlag, setMasterFlag] = useState([]);
   const [checkboxes, setCheckboxes] = useState({})
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   let demoFun = () =>
     demoData.map((element) => {
@@ -23,17 +33,19 @@ function App() {
   };
   let uniqueArray = removeDuplicates(demoFun(), "Priority");
 
+
   useEffect(() => {
     if (uniqueArray?.length) {
       const updatedColumns = uniqueArray[0].map((field) => ({
         field: field,
         headerName: field,
         width: 150,
-        editable: true,
+        
         renderCell: (params) => {
           if (field === "Default Image for Job") {
             return <ImageCell imageUrl={params.value} />; // Pass image URL to ImageCell component
-          } else {
+          } 
+          else {
             return params.value; // Render other cell values normally
           }
         },
@@ -49,62 +61,122 @@ function App() {
     };
   });
 
-  let newMaster = useCallback(() => {
+  let newMaster = () => {
     return masterDemoData.map((data) => data.Column3);
-  }, [masterDemoData]);
-
-  console.log(
-    "newmas",
-    newMaster()?.map((data) => data)
-  );
-
-  const [currentCal, setCuurentcCal] = useState(columns);
-  const handleCallOrdr = (newColum) => {
-    setCuurentcCal(newColum);
   };
 
-  const CustomButton = () => {
+  useEffect(() => {
+    if(!checkboxes.length){
+      newMaster();
+    }
+  }, [checkboxes])
 
-    const handlemenuopen = () => {
-      setMasterFlag((prev)=>!prev);
-    };
+  const addValue = (newValue) => {
+    setMasterFlag((prev)=>[...prev,newValue]);
+  };
 
-    const handleMouseLeave = () => {
-        setMasterFlag(false);
-    };
+  // const filterData = () =>{
+  //   const filterValue = demoData.filter(data => masterFlag.includes(data.Category));
+  //   return filterValue;
+  // }
+  
+  const handleCheckboxChange = (e)=>{
+    // debugger
+    const { name, checked ,value } = e.target;
+    addValue(value)
 
-    const handleCheckboxChange = (event) => {
-      const { name, checked } = event.target;
-      setCheckboxes({
-        ...checkboxes,
-        [name]: checked,
-      });
-    };
+    // const filterData = demoData.filter(data => value.some(value => data.Category === value));
+    // console.log("filterData",filterData);
+
+    setCheckboxes((prev) => ({
+      ...prev,
+      [name]: {checked,value}
+    }));
+  }
+
+  console.log("filterData",);
+
+  // useEffect(()=>{
+  //   let finalData = filterData().length>0 ? filterData() : demoData
+  //  setRows(finalData)
+  // },[masterFlag])
 
 
-    return (
-      <div style={{ display: "flex" }}>
-        <GridToolbar /> {/* Render the default toolbar */}
-        <div>
-        <Button  onClick={handlemenuopen}>progress filter</Button>
-        <div onMouseLeave={handleMouseLeave}  style={{display: masterFlag?'block':'none',position:'absolute',zIndex:1,height:'60%',overflowY:'scroll',backgroundColor:'#f1f1f1'}}>
-          {newMaster()?.map((data,i) => (
-              <div key={i}>
-                <Checkbox disableRipple checked={checkboxes[`checkbox${i+1}` || {}]} onClick={(e)=>handleCheckboxChange(e)} name={`checkbox${i+1}`}/>{data}
+  const handelApplyFilter = () =>{
+    const filterValue = demoData.filter(data => masterFlag.includes(data.Category));
+    let finalData = filterValue.length>0 ? filterValue : demoData
+    setRows(finalData)
+    setAnchorEl(null);
+  }
+
+  const handelClearFilter  = () =>{
+    setRows(demoData);
+    setCheckboxes({});
+    setMasterFlag([]);
+    setAnchorEl(null);
+  }
+
+  console.log("checkboxes",checkboxes)
+  
+  // console.log("checkboxes", demoData);                                                     
+  return (
+    <>
+      <div>
+        <div style={{ backgroundColor: "#797979" }}>
+          <div style={{marginLeft:'8px'}}>
+            <Button
+              id="basic-button"
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
+              variant="outlined"
+              style={{ color: "white", borderColor: "white", margin: "5px" }}
+            >
+              <Typography sx={{ fontSize: "14px" }}>Category Filter</Typography>
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+              style={{height:'90%',marginTop:'2px'}}
+            >
+              <div style={{ position: "fixed",backgroundColor:'white',zIndex:111111,padding:'12px',marginTop:'-8px',width:'287px',borderBottom:'1px solid #f1f1f1'}}>
+                <div style={{display:'flex',justifyContent:'space-between',width:'100%'}}>
+                <Button variant="contained" style={{backgroundColor:'#797979',color:'white'}} onClick={handelApplyFilter}>Apply</Button>
+                <Button variant="contained" style={{backgroundColor:'#797979',color:'white'}} onClick={handelClearFilter}>clear</Button>
+                </div>
               </div>
-            ))}
-        </div>
+              <div 
+              style={{ marginTop: "45px" }}
+              >
+                {newMaster()?.map((data, i) => (
+                  <>
+                    <MenuItem key={i} disableRipple>
+                      <Checkbox
+                        defaultChecked={false}
+                        value={data}
+                        disableRipple
+                        checked={checkboxes[`checkbox${i + 1}`]?.checked}
+                        onClick={(e) => handleCheckboxChange(e)}
+                        name={`checkbox${i + 1}`}
+                      />
+                      {data}
+                    </MenuItem>
+                  </>
+                ))}
+              </div>
+            </Menu>
+          </div>
         </div>
       </div>
-    );
-  };
-
-  console.log("demooo", demoData);
-  return (
-    <div>
       <div
         style={{
-          height: "100vh",
+          height: `calc(100vh - 43.5px)`,
         }}
       >
         <DataGrid
@@ -117,16 +189,20 @@ function App() {
               },
             },
           }}
-          rows={demoData}
-          columns={columns}
-          onColumnOrderChange={handleCallOrdr}
+          rows={rows}
+          columns={columns.map((column) => ({
+            ...column,
+            headerClassName: "customHeaderCell",
+          }))}
+          density="compact"
+          onColumnOrderChange={""}
           components={{
-            Toolbar: CustomButton,
+            Toolbar: GridToolbar,
             // Cell: handleCell,
           }}
         />
       </div>
-    </div>
+    </>
   );
 }
 
