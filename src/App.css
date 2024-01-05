@@ -53,10 +53,29 @@
 }
 
 ::-webkit-scrollbar {
-  width: 8px; 
+  width: 5px; 
+  
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgb(136, 136, 136,0.4); /* Change this value to adjust scrollbar thumb color */
+  border-radius:25px;
 }
 
+.customHeaderCell{
+  background-color: #797979;
+  color:white
+}
+
+.MuiDataGrid-columnHeaderTitleContainer {
+  background-color: #797979;
+}
+.MuiDataGrid-columnHeaderTitleContainer .MuiCheckbox-root{
+  color:black;
+}
+
+
+.MuiDataGrid-columnHeaderTitleContainer .MuiCheckbox-root:hover,
+.MuiDataGrid-columnHeaderTitleContainer .MuiCheckbox-root.Mui-checked {
+  color: black; /* Change the checkbox color when checked */
+}
